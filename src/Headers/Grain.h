@@ -1,30 +1,64 @@
 //
-// Created by Daniël Kamp on 12/02/2021.
+// Created by Daniël Kamp on 03/03/2021.
 //
 
-#ifndef SNOWSTORM_GRAIN_H
-#define SNOWSTORM_GRAIN_H
+#ifndef _LOCALENV_GRAIN_H
+#define _LOCALENV_GRAIN_H
 
 #include "Buffer.h"
-#include "Envelope.h"
-#include "Filter.h"
+#include <cmath>
 
 class Grain {
-public:
-    Grain(Buffer *buffer);
-    virtual ~Grain();
+  public:
+    Grain(int order, int length, int start, Buffer*);
+    ~Grain();
 
-private:
-    bool active; // Grain is playing
-    bool random; // Grain is triggered randomly
+    // Process for a single tick
+    float *process(float envelope_length, int envelope_shape, float spatialize);
+    // Run a check on the buffer
+    int check();
+    // Enable looped mode
+    void loop();
 
-    int position; // Position in the input's buffer
-    int length; // Length of the buffer
+    void deactivate();
 
-    float sample; // The current sample
-    float speed; // The playback speed
+    void setLength(int nLength);
+    void calculateStart(int division);
 
+    void wrapLength();
+    void scheduleCleanup();
+
+    bool checkPosition();
+    int getOrder();
+    int getStart();
+
+    void print();
+  private:
+    Buffer *buffer;
+
+    float sample[2];
+
+    // Has order, length, position, speed
+    int order;
+    int length;
+    int position;
+    int start;
+    int end;
+    float speed;
+
+    // temp: latest vars
+    int lEnvSize;
+    float latest_output[44100];
+
+    float spatializer;
+    float channelizer;
+
+    bool _loop;
+    bool _active;
+    // Only allow deletion after a new buffer has started playing
+    bool _schedule_cleanup;
+    int _cleanup_countdown;
 };
 
 
-#endif //SNOWSTORM_GRAIN_H
+#endif //_LOCALENV_GRAIN_H

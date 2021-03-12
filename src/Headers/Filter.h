@@ -11,19 +11,27 @@
 
 class Filter {
 public:
-    Filter(float frequency, float samplerate, Buffer *buffer);
+    Filter(float frequency, int samplerate, Buffer *input, Buffer *output);
     virtual ~Filter();
 
-    float getSample() const;
+    float process();
     void tick();
 
     void setFrequency(float frequency);
+    float getFrequency();
+    int getDelay();
 
-private:
-    Buffer *buffer;
+    virtual float calculateSample();
+    virtual void frequencyHandler();
+
+protected:
+    Buffer *input;
+    Buffer *output;
     float frequency;
     float sample;
+    double ff;
 
+    int samplerate;
     int index;
     int delayTime;
     int buffer_size;
