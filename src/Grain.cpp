@@ -2,9 +2,7 @@
 // Created by Daniël Kamp on 03/03/2021.
 //
 
-#include "Grain.h"
-
-#include <iostream>
+#include "Headers/Grain.h"
 
 Grain::Grain(int order, int length, int start, Buffer *buffer) {
   this->buffer = buffer;
@@ -27,27 +25,7 @@ float *Grain::process(float env_length, int env_shape, float spatialize) {
   if(checkPosition()) {
     float tmp = buffer->getCurrentSample();
 
-    int env_size = env_length * length;
-    lEnvSize = env_size;
-    if(env_shape == 0) {
-      // Handle linear
-      // TODO: fix this thing.
-      //    -> it pops?
-      if(position <= env_size) {
-        // Rise
-        tmp = tmp * position * (1.0 / env_size);
-      } else if(position >= length - env_size) {
-        // Fall
-        tmp = tmp * (1.0 - (position - (length - env_size)) * (1.0 / env_size));
-      }
-    } else {
-       // Handle exponential
-//       if(position < env_size) {
-//         tmp = tmp * env_step * pow(position, 2);
-//       } else {
-//         tmp = tmp * env_step * pow(position * -1, 2) + 1;
-//       }
-    }
+    tmp = applyWindowing(tmp, env_length, env_shape);
 
     if(spatialize > 0.0 && spatializer < spatialize) {
       // First, randomly select a channel
@@ -107,6 +85,31 @@ int Grain::check() {
   return 0;
 }
 
+float Grain::applyWindowing(float sample, float env_length, int env_shape) const {
+  int env_size = (int) env_length * length;
+
+  if(env_shape == 0) {
+    // Handle a linear slope
+    if(position <= env_size) {
+      // Rise
+      sample = sample * position * (1.0 / env_size);
+    } else if(position >= length - env_size) {
+      // Fall
+      sample = sample * (1.0 - (position - (length - env_size)) * (1.0 / env_size));
+    }
+  } else {
+    // TODO: implement exponential slopes
+    // Handle exponential
+//       if(position < env_size) {
+//         sample = sample * env_step * pow(position, 2);
+//       } else {
+//         sample = sample * env_step * pow(position * -1, 2) + 1;
+//       }
+  }
+
+  return sample;
+}
+
 void Grain::deactivate() {
   _active = false;
 }
@@ -154,9 +157,4 @@ int Grain::getOrder() {
 
 int Grain::getStart() {
   return start;
-}
-
-void Grain::print() {
-  std::cout << latest_output << std::endl;
-  std::cout << "Grain: " << order << " start: " << start << " length: " << length << " end: " << end << " envelope_size: " << lEnvSize << std::endl;
 }

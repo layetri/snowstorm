@@ -6,7 +6,7 @@
 #define _LOCALENV_GRAIN_H
 
 #include "Buffer.h"
-#include <cmath>
+#include <Arduino.h>
 
 class Grain {
   public:
@@ -28,11 +28,11 @@ class Grain {
     void wrapLength();
     void scheduleCleanup();
 
+    float applyWindowing(float, float, int) const;
+
     bool checkPosition();
     int getOrder();
     int getStart();
-
-    void print();
   private:
     Buffer *buffer;
 
@@ -46,15 +46,12 @@ class Grain {
     int end;
     float speed;
 
-    // temp: latest vars
-    int lEnvSize;
-    float latest_output[44100];
-
     float spatializer;
     float channelizer;
 
     bool _loop;
     bool _active;
+
     // Only allow deletion after a new buffer has started playing
     bool _schedule_cleanup;
     int _cleanup_countdown;

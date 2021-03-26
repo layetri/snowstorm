@@ -2,7 +2,7 @@
 // Created by Daniël Kamp on 04/03/2021.
 //
 
-#include "DryWetMixer.h"
+#include "Headers/DryWetMixer.h"
 
 DryWetMixer::DryWetMixer(float ratio, Buffer *input1, Buffer *input2, Buffer *output) {
   this->input1 = input1;

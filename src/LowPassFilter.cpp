@@ -2,7 +2,7 @@
 // Created by Daniël Kamp on 25/02/2021.
 //
 
-#include "LowPassFilter.h"
+#include "Headers/LowPassFilter.h"
 #include <iostream>
 
 LowPassFilter::LowPassFilter(float frequency, int samplerate, Buffer *input, Buffer *output) : Filter(frequency, samplerate, input, output) {
@@ -24,6 +24,4 @@ void LowPassFilter::frequencyHandler() {
   b2 = b0;
   a1 = 2.0 * (ita*ita - 1.0) * b0;
   a2 = -(1.0 - q*ita + ita*ita) * b0;
-
-  std::cout << "Coefficients: " << b0 << ", " << b1 << ", " << b2 << ", " << a1 << ", " << a2 << std::endl;
 }

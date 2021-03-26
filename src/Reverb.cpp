@@ -2,14 +2,14 @@
 // Created by Daniël Kamp on 25/02/2021.
 //
 
-#include "Reverb.h"
+#include "Headers/Reverb.h"
 #include <iostream>
 
 Reverb::Reverb(float tail, int samplerate, Buffer *input, Buffer *output) {
   // Assign IO buffer pointers
   this->input = input;
   this->output = output;
-  y = new Buffer(input->getSize(), "reverbY");
+  y = new Buffer(input->getSize());
 
   // Calculate delay times, feedback rates and gain ratio
   this->samplerate = samplerate;

@@ -2,7 +2,7 @@
 // Created by Daniël Kamp on 25/02/2021.
 //
 
-#include "DelayLine.h"
+#include "Headers/DelayLine.h"
 #include <iostream>
 
 DelayLine::DelayLine(int delayTime, float feedback, Buffer *input) {
@@ -11,7 +11,7 @@ DelayLine::DelayLine(int delayTime, float feedback, Buffer *input) {
   position = 0;
 
   x = input;
-  y = new Buffer(input->getSize(), "DelayLine");
+  y = new Buffer(input->getSize());
 }
 
 DelayLine::~DelayLine() {

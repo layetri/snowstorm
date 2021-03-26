@@ -2,15 +2,12 @@
 // Created by Daniël Kamp on 17/02/2021.
 //
 
-#include "Buffer.h"
+#include "Headers/Buffer.h"
 
-#include <iostream>
-
-Buffer::Buffer(int length, std::string name) {
+Buffer::Buffer(int length) {
   data = new float[length];
   size = length;
   position = 0;
-  this->name = name;
 }
 
 Buffer::~Buffer() {
@@ -42,7 +39,6 @@ void Buffer::tick() {
     position++;
   } else {
     position -= size;
-    //std::cout << position << ", " << size << ": Buffer returning (" << name << ", " << getCurrentSample() << ")" << std::endl;
   }
 }
 
